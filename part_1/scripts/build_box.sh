@@ -8,4 +8,5 @@ fi
 
 VIRTUAL_MACHINE="$1"
 
+cd ../boxes
 vagrant package --base $VIRTUAL_MACHINE

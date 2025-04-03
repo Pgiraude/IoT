@@ -1,53 +1,70 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$control_installation_script= <<-SCRIPT
-sudo k3s server &
-sudo k3s kubectl get node
+SERVER_IP = "192.168.56.110"
+WORKER_IP = "192.168.56.111"
+
+control_installation_script= <<-SCRIPT
+  sudo apt update
+  sudo apt install -y curl
+  curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" INSTALL_K3S_EXEC="--flannel-iface eth1" sh -
+  sleep 10
+  if [ -f "/etc/rancher/k3s/k3s.yaml" ]; then
+    sudo chmod 644 /etc/rancher/k3s/k3s.yaml
+    sudo cp /etc/rancher/k3s/k3s.yaml /vagrant/
+  else
+    echo "ERROR: k3s.yaml not found!" >&2
+    exit 1
+  fi
+  NODE_TOKEN="/var/lib/rancher/k3s/server/node-token"
+  while [ ! -e ${NODE_TOKEN} ]; do sleep 1; done
+  sudo cp ${NODE_TOKEN} /vagrant/
 SCRIPT
 
-$agent_installation_script= <<-SCRIPT
-# NODE_TOKEN comes from /var/lib/rancher/k3s/server/node-token on your server
-sudo k3s agent --server https://myserver:6443 --token ${NODE_TOKEN}
+
+agent_installation_script= <<-SCRIPT
+ curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" INSTALL_K3S_EXEC="--flannel-iface eth1" K3S_URL=https://#{SERVER_IP} K3S_TOKEN=$(sudo cat /vagrant/node-token) sh -
+  sleep 10
 SCRIPT
-
-
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "fakouyat/ubuntu"
-  config.vm.box_url = "./boxes/package.box"
-
+  config.vm.box = "ubuntu/focal64"
+  #config.vm.box = "fakouyat/ubuntu"
+  #config.vm.box_url = "./boxes/package.box"
+  
   #Disk
   config.vm.disk :disk, size: "100GB", primary: true
 
   #SSH configuration
-  config.ssh.private_key_path = "./.ssh/vagrant_key.pub"
+  #config.ssh.private_key_path = "/home/facinet/.ssh/vagrant_key.pub"
+  # config.ssh.private_key_path = "~/.vagrant.d/insecure_private_key"
   config.ssh.username = "vagrant"
+  #config.ssh.insert_key = true
   config.ssh.forward_agent = true
 
   #Controller
   config.vm.define "fakouyatS" do |control|
     control.vm.hostname = "fakouyatS"
-    control.vm.network "private_network", ip: "192.168.56.110"
+    control.vm.network "private_network", ip: SERVER_IP
     control.vm.provider 'virtualbox' do |vb|
       vb.customize ["modifyvm", :id, "--name", "fakouyatS"]
-      vb.memory = 1024
-      vb.cpus = 1
+      vb.memory = 2048
+      vb.cpus = 2
     end
-    config.vm.provision "shell", $control_installation_script
+    #control.vm.provision "shell", inline: control_installation_script
   end
 
   #Worker
   config.vm.define "fakouyatSW" do |worker|
     worker.vm.hostname = "fakouyatSW"
-    worker.vm.network "private_network", ip: "192.168.56.111"
+    worker.vm.network "private_network", ip: WORKER_IP
     worker.vm.provider 'virtualbox' do |vb|
       vb.customize ["modifyvm", :id, "--name", "fakouyatSW"]
       vb.memory = 1024
       vb.cpus = 1
     end
-    config.vm.provision "shell", $agent_installation_script
+    #worker.vm.provision "shell", inline: agent_installation_script
   end
 
 end
