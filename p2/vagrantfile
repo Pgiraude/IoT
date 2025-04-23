@@ -4,7 +4,7 @@
 SERVER_IP = "192.168.56.110"
 
 path_to_k3s_server_script = "./scripts/k3s_as_server.sh"
-path_to_nginx_config = "./scripts/install_and_config_nginx.sh"
+install_dependancies = "./scripts/install-dependancies.sh"
 
 Vagrant.configure("2") do |config|
 
@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
   #controller
   config.vm.define "fakouyatS" do |control|
     control.vm.hostname = "fakouyatS"
-    control.vm.network "forwarded_port", guest: 80, host: 8080
+
     
     control.vm.synced_folder "./infra", "/infra", owner: "vagrant", group: "vagrant"
 
@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
     end
 
     control.vm.provision "shell", path: path_to_k3s_server_script
-    control.vm.provision "shell", path: path_to_nginx_config
+    control.vm.provision "shell", path: install_dependancies
   end
 
 end
