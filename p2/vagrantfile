@@ -1,0 +1,30 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+SERVER_IP = "192.168.56.110"
+
+path_to_k3s_server_script = "./scripts/k3s_as_server.sh"
+install_dependancies = "./scripts/install-dependancies.sh"
+
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "ubuntu/bionic64"
+
+  #controller
+  config.vm.define "fakouyatS" do |control|
+    control.vm.hostname = "fakouyatS"
+
+    
+    control.vm.synced_folder "./infra", "/infra", owner: "vagrant", group: "vagrant"
+
+    control.vm.network "private_network", ip: SERVER_IP
+    control.vm.provider 'virtualbox' do |vb|
+      vb.memory = 1024
+      vb.cpus = 1
+    end
+
+    control.vm.provision "shell", path: path_to_k3s_server_script
+    control.vm.provision "shell", path: install_dependancies
+  end
+
+end
