@@ -11,4 +11,4 @@ INSTALL_K3S_EXEC="--node-ip ${SERVER_IP} --advertise-address ${SERVER_IP} --flan
 
 cp /var/lib/rancher/k3s/server/node-token /vagrant/node-token
 
-#echo "${SERVER_IP} app1.com app2.com app2.com" | sudo tee -a /etc/hosts
+echo "${SERVER_IP} app1.com app2.com" | sudo tee -a /etc/hosts
