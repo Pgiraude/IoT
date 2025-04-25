@@ -13,10 +13,10 @@ spec:
         app: calculator-app
     spec:
       containers:
-      - name: calculator-app
-        image: facinetm14/calculator-app:1.0
-        ports:
-        - containerPort: 80
+        - name: calculator-app
+          image: facinetm14/calculator-app:1.0
+          ports:
+            - containerPort: 80
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -33,33 +33,45 @@ spec:
         app: etch-sketch-app
     spec:
       containers:
-      - name: etch-sketch-app
-        image: facinetm14/etch-sketch-app:1.0
-        ports:
-        - containerPort: 80
+        - name: etch-sketch-app
+          image: facinetm14/etch-sketch-app:1.0
+          ports:
+            - containerPort: 80
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rock-paper-scissors-app
+  name: test
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: rock-paper-scissors-app
+      app: test
   template:
     metadata:
       labels:
-        app: rock-paper-scissors-app
+        app: test
     spec:
       containers:
-      - name: rock-paper-scissors-app
-        image: facinetm14/rock-paper-scissors-app:1.0
-        ports:
-        - containerPort: 80
+        - name: test
+          image: nginx
+          ports:
+            - containerPort: 80
 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-service
+spec:
+  selector:
+    app: test
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
 ---
 apiVersion: v1
 kind: Service
@@ -88,54 +100,40 @@ spec:
       targetPort: 80
 
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: rock-paper-scissors-app-service
-spec:
-  selector:
-    app: rock-paper-scissors-app
-  ports:
-    - name: http
-      protocol: TCP
-      port: 80
-      targetPort: 80
----
-
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: infra-name-based-route-ingress
 spec:
- rules:  
- 
-  - host: app1.com   
-    http:      
-      paths:      
-      - pathType: Prefix        
-        path: "/"        
-        backend:          
-          service:            
-            name: calculator-app-service
-            port:              
-              number: 80
+  rules:
+    - host: app1.com
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: calculator-app-service
+                port:
+                  number: 80
 
-  - host: app2.com   
-    http:      
-      paths:      
-      - pathType: Prefix        
-        path: "/"        
-        backend:          
-          service:            
-            name: etch-sketch-app-service
-            port:              
-              number: 80
-  - http:      
-      paths:      
-      - pathType: Prefix        
-        path: "/"        
-        backend:          
-          service:            
-            name: rock-paper-scissors-app-service
-            port:              
-              number: 80
+    - host: app2.com
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: etch-sketch-app-service
+                port:
+                  number: 80
+
+    - http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: test-service
+                port:
+                  number: 80
