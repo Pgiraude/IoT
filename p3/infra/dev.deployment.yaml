@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rock-paper-scissors-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rock-paper-scissors-app
+  template:
+    metadata:
+      labels:
+        app: rock-paper-scissors-app
+    spec:
+      containers:
+      - name: rock-paper-scissors-app
+        image: facinetm14/rock-paper-scissors-app:1.0
+        ports:
+        - containerPort: 80       
