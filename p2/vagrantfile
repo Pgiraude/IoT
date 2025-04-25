@@ -8,7 +8,8 @@ install_dependancies = "./scripts/install-dependancies.sh"
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "ubuntu/bionic64"
+  config.vm.box = "bento/ubuntu-24.04"
+  config.vm.box_version = "202502.21.0"
 
   #controller
   config.vm.define "fakouyatS" do |control|

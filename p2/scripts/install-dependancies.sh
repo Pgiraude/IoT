@@ -25,8 +25,9 @@ sudo apt-get install -y helm
 helm repo add traefik https://traefik.github.io/charts
 helm repo update
 
-helm upgrade --install traefik traefik/traefik \
-  --namespace kube-system \
-  --create-namespace
+kubectl delete job -n kube-system $(kubectl get jobs -n kube-system -o name | grep helm-install-traefik)
 
-kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+helm uninstall traefik -n kube-system
+helm install traefik traefik/traefik -n kube-system
+
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.3/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
