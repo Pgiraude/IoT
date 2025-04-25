@@ -1,25 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: infra-name-based-route-ingress
-spec:
- rules:  
-  - http:      
-      paths:      
-      - pathType: Prefix        
-        path: "/"        
-        backend:          
-          service:            
-            name: rock-paper-scissors-app-service
-            port:              
-              number: 80
-
----
-
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: argocd-ingress
+  name: dev-ingress
+  namespace: dev
 spec:
   rules:
   - http:
@@ -28,6 +11,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: argocd-server
+            name: dev-rock-paper-scissors-app-service
             port:
-              number: 8080
+              number: 80
