@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SERVER_IP="192.168.56.110"
-IFACE="enp0s8"
+IFACE="eth1"
 TOKEN=$(cat /vagrant/node-token)
 
 sudo apt update

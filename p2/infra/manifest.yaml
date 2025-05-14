@@ -1,3 +1,4 @@
+#**************************** DEPLOYMENTS*****************************************
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,7 +35,7 @@ spec:
     spec:
       containers:
       - name: etch-sketch-app
-        image: facinetm14/etch-sketch-app:1.0
+        image: facinetm14/etch-sketch-app:1.6
         ports:
         - containerPort: 80
 
@@ -59,8 +60,8 @@ spec:
         image: facinetm14/rock-paper-scissors-app:1.0
         ports:
         - containerPort: 80
-
 ---
+#**************************** Services *****************************************
 apiVersion: v1
 kind: Service
 metadata:
@@ -101,7 +102,7 @@ spec:
       port: 80
       targetPort: 80
 ---
-
+#**************************** INGRESS CONFIG MAP *****************************************
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
