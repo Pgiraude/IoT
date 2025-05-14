@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/Pgiraude/IoT.git
+    repoURL: https://github.com/Pgiraude/pgiraude.git
     targetRevision: HEAD
     path: p3/infra
   destination:
