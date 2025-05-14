@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: rock-paper-scissors-app
-        image: facinetm14/rock-paper-scissors-app:1.6
+        image: wil42/playground:v1
         ports:
         - containerPort: 80
