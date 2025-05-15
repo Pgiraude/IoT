@@ -27,7 +27,7 @@ kubectl apply -f ./infra/dev.service.yaml -n dev
 
 # port forwarding
 # kubectl port-forward svc/argocd-server -n argocd 8080:443
-# kubectl port-forward svc/rock-paper-scissors-app-service -n dev 8888:80
+# kubectl port-forward svc/rock-paper-scissors-app-service -n dev 8888:8888
 
 
 
