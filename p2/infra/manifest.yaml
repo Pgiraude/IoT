@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
       - name: etch-sketch-app
-        image: facinetm14/etch-sketch-app:1.6
+        image: facinetm14/etch-sketch-app:1.0
         ports:
         - containerPort: 80
 
